@@ -1,3 +1,4 @@
+import { StateField } from "@codemirror/state";
 import { Editor, MarkdownView, Plugin } from "obsidian";
 import { startSession, abortSession } from "./perilous";
 import {
@@ -9,6 +10,7 @@ import { log } from "./utilities";
 
 export default class PerilousWritingPlugin extends Plugin {
   settings: PerilousWritingSettings;
+  cmExtensions: Array<StateField<unknown>> = [];
 
   async onload() {
     await this.loadSettings();
@@ -18,7 +20,7 @@ export default class PerilousWritingPlugin extends Plugin {
       id: "perilous-writing-short-session",
       name: `Begin short session`,
       editorCallback: (editor: Editor, view: MarkdownView) => {
-        startSession(editor, view, this, "short");
+        startSession(editor, view, this, this.cmExtensions, "short");
       },
     });
 
@@ -26,7 +28,7 @@ export default class PerilousWritingPlugin extends Plugin {
       id: "perilous-writing-long-session",
       name: `Begin long session`,
       editorCallback: (editor: Editor, view: MarkdownView) => {
-        startSession(editor, view, this, "long");
+        startSession(editor, view, this, this.cmExtensions, "long");
       },
     });
 
@@ -35,6 +37,11 @@ export default class PerilousWritingPlugin extends Plugin {
 
   onunload() {
     abortSession();
+    // Remove the CodeMirror transaction handler, if it still exists.
+    if (this.cmExtensions.length > 0) {
+      this.cmExtensions.pop();
+      this.app.workspace.updateOptions();
+    }
     log("Unloaded plugin");
   }
 

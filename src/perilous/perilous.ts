@@ -18,6 +18,7 @@ export function startSession(
   editor: Editor,
   view: MarkdownView,
   plugin: PerilousWritingPlugin,
+  cmExtensions: Array<StateField<unknown>>,
   sessionType: SessionType
 ) {
   const sessionLength =
@@ -68,23 +69,21 @@ export function startSession(
       log("Removed: CodeMirror hook; &c.");
     },
   };
-  const cmExtensions: Array<StateField<unknown>> = [];
-
   const scheduler = new Scheduler(sessionLength, hooks);
 
   scheduler.initialise((eventCallback: () => void) => {
     const onInputKeypress = StateField.define({
-        create: () => null,
-        update: (_, transaction) => {
-          if (!transaction.docChanged) {
-            return null;
-          }
-          if (transaction.isUserEvent("input")) {
-            eventCallback();
-          }
+      create: () => null,
+      update: (_, transaction) => {
+        if (!transaction.docChanged) {
           return null;
-        },
-    })
+        }
+        if (transaction.isUserEvent("input")) {
+          eventCallback();
+        }
+        return null;
+      },
+    });
     cmExtensions.push(onInputKeypress);
     plugin.registerEditorExtension(cmExtensions);
     log("Registered CodeMirror hook");
@@ -93,7 +92,6 @@ export function startSession(
 
 export function abortSession() {
   removeProgressBar();
-  // TODO: Remove CodeMirror event logger
 }
 
 function getSnapshot(editor: Editor): [string, EditorPosition] {
