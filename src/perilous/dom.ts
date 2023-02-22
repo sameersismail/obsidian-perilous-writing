@@ -84,13 +84,6 @@ function interpolateWarningColor(warningPercent: number): string {
 function ProgressBarBackground(): HTMLElement {
   const wrapper = document.createElement("div");
   wrapper.id = PROGRESS_BAR_BACKGROUND_ID;
-  wrapper.style.position = "absolute";
-  wrapper.style.top = "0";
-  wrapper.style.left = "0";
-  wrapper.style.width = "100%";
-  wrapper.style.height = "4px";
-  wrapper.style.background = "hsl(0deg 0% 95%)";
-
   return wrapper;
 }
 
@@ -100,22 +93,12 @@ function ProgressBarBackground(): HTMLElement {
 function ProgressBarBar(sessionLength: number): HTMLElement {
   const wrapper = document.createElement("div");
   wrapper.id = PROGRESS_BAR_WRAPPER_ID;
-  wrapper.style.position = "absolute";
-  wrapper.style.top = "0";
-  wrapper.style.left = "0";
-  wrapper.style.width = "0%";
-  wrapper.style.height = "4px";
   wrapper.style.transition = `width ${sessionLength}ms linear`;
 
   const inner = document.createElement("div");
   inner.id = PROGRESS_BAR_BAR_ID;
-  inner.style.background = "var(--color-purple)";
-  inner.style.height = "100%";
-  inner.style.width = "100%";
-  inner.style.transition = `background 100ms ease-in`;
 
   wrapper.appendChild(inner);
-
   return wrapper;
 }
 
