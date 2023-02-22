@@ -17,7 +17,7 @@ export default class PerilousWritingPlugin extends Plugin {
     this.addSettingTab(new PerilousWritingSettingTab(this.app, this));
 
     this.addCommand({
-      id: "perilous-writing-short-session",
+      id: "short-session",
       name: `Begin short session`,
       editorCallback: (editor: Editor, view: MarkdownView) => {
         startSession(editor, view, this, this.cmExtensions, "short");
@@ -25,7 +25,7 @@ export default class PerilousWritingPlugin extends Plugin {
     });
 
     this.addCommand({
-      id: "perilous-writing-long-session",
+      id: "long-session",
       name: `Begin long session`,
       editorCallback: (editor: Editor, view: MarkdownView) => {
         startSession(editor, view, this, this.cmExtensions, "long");
