@@ -1,4 +1,4 @@
-#progress-bar-background {
+#perilous-writing-progress-bar-background {
   position: absolute;
   top: 0;
   left: 0;
@@ -7,7 +7,7 @@
   background: hsl(0deg 0% 95%);
 }
 
-#progress-bar-wrapper {
+#perilous-writing-progress-bar-wrapper {
   position: absolute;
   top: 0;
   left: 0;
@@ -15,7 +15,7 @@
   height: 4px;
 }
 
-#progress-bar-bar {
+#perilous-writing-progress-bar-bar {
   background-color: var(--color-purple);
   height: 100%;
   width: 100%;

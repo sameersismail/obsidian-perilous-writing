@@ -2,7 +2,7 @@ export type SchedulerHooks = {
   /* The first entry point in to the application; a session has been requested. */
   onInitialisation: () => void;
   /* The first event has begun the session. */
-  onStart: (interalId: number) => void;
+  onStart: (intervalId: number) => void;
   /* For each event. */
   onEvent: () => void;
   /* When we're within the warning interval. */

@@ -2,9 +2,10 @@ import { Editor } from "obsidian";
 
 type ProgressBarState = "default" | "warning" | "success" | "failure";
 
-const PROGRESS_BAR_BACKGROUND_ID = "progress-bar-background";
-const PROGRESS_BAR_WRAPPER_ID = "progress-bar-wrapper";
-const PROGRESS_BAR_BAR_ID = "progress-bar-bar";
+const PROGRESS_BAR_BACKGROUND_ID = "perilous-writing-progress-bar-background";
+const PROGRESS_BAR_WRAPPER_ID = "perilous-writing-progress-bar-wrapper";
+const PROGRESS_BAR_BAR_ID = "perilous-writing-progress-bar-bar";
+
 const TAB_CONTAINER_CLASS = "workspace-tab-container";
 
 export function addProgressBar(editor: Editor, sessionLength: number) {
@@ -14,10 +15,10 @@ export function addProgressBar(editor: Editor, sessionLength: number) {
 }
 
 export function removeProgressBar() {
-  const progressBarBackground = document.getElementById(
+  const progressBarBackground = activeDocument.getElementById(
     PROGRESS_BAR_BACKGROUND_ID
   );
-  const progressBarBar = document.getElementById(PROGRESS_BAR_WRAPPER_ID);
+  const progressBarBar = activeDocument.getElementById(PROGRESS_BAR_WRAPPER_ID);
   progressBarBackground?.remove();
   progressBarBar?.remove();
 }
@@ -26,7 +27,7 @@ export function removeProgressBar() {
  * `0 <= percent <= 100`.
  */
 export function setProgressPercent(percent: number) {
-  const element = document.getElementById(
+  const element = activeDocument.getElementById(
     PROGRESS_BAR_WRAPPER_ID
   ) as HTMLElement;
   element.style.width = `${percent}%`;
@@ -36,7 +37,7 @@ export function setProgressPercent(percent: number) {
  * Halt the progress transition.
  */
 export function completeProgressBar() {
-  const element = document.getElementById(
+  const element = activeDocument.getElementById(
     PROGRESS_BAR_WRAPPER_ID
   ) as HTMLElement;
   element.style.transition = "none";
@@ -46,7 +47,9 @@ export function setProgressBarState(
   state: ProgressBarState,
   warningPercent: number = 0
 ): void {
-  const element = document.getElementById(PROGRESS_BAR_BAR_ID) as HTMLElement;
+  const element = activeDocument.getElementById(
+    PROGRESS_BAR_BAR_ID
+  ) as HTMLElement;
   const color = {
     default: "purple",
     success: "green",
@@ -82,7 +85,7 @@ function interpolateWarningColor(warningPercent: number): string {
  * Create the progress bar background component.
  */
 function ProgressBarBackground(): HTMLElement {
-  const wrapper = document.createElement("div");
+  const wrapper = activeDocument.createElement("div");
   wrapper.id = PROGRESS_BAR_BACKGROUND_ID;
   return wrapper;
 }
@@ -91,11 +94,11 @@ function ProgressBarBackground(): HTMLElement {
  * Create the progress bar component.
  */
 function ProgressBarBar(sessionLength: number): HTMLElement {
-  const wrapper = document.createElement("div");
+  const wrapper = activeDocument.createElement("div");
   wrapper.id = PROGRESS_BAR_WRAPPER_ID;
   wrapper.style.transition = `width ${sessionLength}ms linear`;
 
-  const inner = document.createElement("div");
+  const inner = activeDocument.createElement("div");
   inner.id = PROGRESS_BAR_BAR_ID;
 
   wrapper.appendChild(inner);
