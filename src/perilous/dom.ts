@@ -1,4 +1,4 @@
-import { Editor } from "obsidian";
+import { View } from "obsidian";
 
 type ProgressBarState = "default" | "warning" | "success" | "failure";
 
@@ -6,10 +6,21 @@ const PROGRESS_BAR_BACKGROUND_ID = "perilous-writing-progress-bar-background";
 const PROGRESS_BAR_WRAPPER_ID = "perilous-writing-progress-bar-wrapper";
 const PROGRESS_BAR_BAR_ID = "perilous-writing-progress-bar-bar";
 
-const TAB_CONTAINER_CLASS = "workspace-tab-container";
+/**
+ * Extend the `View` type with a currently-undocumented DOM node reference.
+ */
+type ExtendedView = View & {
+  leaf: {
+    parent: {
+      tabsContainerEl: HTMLElement;
+    };
+  };
+};
 
-export function addProgressBar(editor: Editor, sessionLength: number) {
-  const tabContainer = getEditorTabContainer(getEditorContainer(editor));
+export function addProgressBar(view: View, sessionLength: number) {
+  const tabContainer = (view as ExtendedView).leaf.parent.tabsContainerEl;
+  // Set this element as the progress bar's containing block.
+  tabContainer.style.position = "relative";
   tabContainer.appendChild(ProgressBarBackground());
   tabContainer.appendChild(ProgressBarBar(sessionLength));
 }
@@ -103,26 +114,4 @@ function ProgressBarBar(sessionLength: number): HTMLElement {
 
   wrapper.appendChild(inner);
   return wrapper;
-}
-
-/**
- * Traverse the DOM upwards starting from `container` and find the closest-nested
- * parent tab container.
- */
-function getEditorTabContainer(container: HTMLElement): HTMLElement {
-  while (!container.classList.contains(TAB_CONTAINER_CLASS)) {
-    container = container.parentElement as HTMLElement;
-  }
-  // Set this element as the progress bar's containing block.
-  container.style.position = "relative";
-  return container;
-}
-
-/**
- * Wrap, and unwrap, the undocumented `containerEl` property.
- */
-function getEditorContainer(editor: Editor): HTMLElement {
-  const containerEl = (editor as Editor & { containerEl: HTMLElement })
-    .containerEl;
-  return containerEl;
 }
