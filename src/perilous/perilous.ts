@@ -18,7 +18,6 @@ export function startSession(
   editor: Editor,
   view: MarkdownView,
   plugin: PerilousWritingPlugin,
-  cmExtensions: Array<StateField<unknown>>,
   sessionType: SessionType
 ) {
   const sessionLength =
@@ -27,9 +26,10 @@ export function startSession(
       : plugin.settings.longSessionLength) * MILLISECONDS_PER_MINUTE;
   log(`Session length: ${sessionLength / MILLISECONDS_PER_MINUTE}m`);
 
+  const cmExtensions: Array<StateField<unknown>> = [];
   const [initialContent, initialCursor] = getSnapshot(editor);
   removeProgressBar();
-  addProgressBar(editor, sessionLength);
+  addProgressBar(view, sessionLength);
 
   const hooks: SchedulerHooks = {
     onInitialisation: () => {
@@ -88,6 +88,8 @@ export function startSession(
     plugin.registerEditorExtension(cmExtensions);
     log("Registered CodeMirror hook");
   });
+
+  return scheduler;
 }
 
 export function abortSession() {

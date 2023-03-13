@@ -1,6 +1,6 @@
-import { StateField } from "@codemirror/state";
-import { Editor, MarkdownView, Plugin } from "obsidian";
+import { Editor, MarkdownView, Notice, Plugin } from "obsidian";
 import { startSession, abortSession } from "./perilous";
+import { canStartScheduler, Scheduler } from "./perilous/scheduler";
 import {
   DEFAULT_SETTINGS,
   PerilousWritingSettings,
@@ -10,7 +10,7 @@ import { log } from "./utilities";
 
 export default class PerilousWritingPlugin extends Plugin {
   settings: PerilousWritingSettings;
-  cmExtensions: Array<StateField<unknown>> = [];
+  scheduler: Scheduler | undefined;
 
   async onload() {
     await this.loadSettings();
@@ -20,7 +20,11 @@ export default class PerilousWritingPlugin extends Plugin {
       id: "short-session",
       name: `Begin short session`,
       editorCallback: (editor: Editor, view: MarkdownView) => {
-        startSession(editor, view, this, this.cmExtensions, "short");
+        if (canStartScheduler(this.scheduler)) {
+          this.scheduler = startSession(editor, view, this, "short");
+        } else {
+          new Notice("A session is already in progress.");
+        }
       },
     });
 
@@ -28,7 +32,11 @@ export default class PerilousWritingPlugin extends Plugin {
       id: "long-session",
       name: `Begin long session`,
       editorCallback: (editor: Editor, view: MarkdownView) => {
-        startSession(editor, view, this, this.cmExtensions, "long");
+        if (canStartScheduler(this.scheduler)) {
+          this.scheduler = startSession(editor, view, this, "long");
+        } else {
+          new Notice("A session is already in progress.");
+        }
       },
     });
 
@@ -36,11 +44,9 @@ export default class PerilousWritingPlugin extends Plugin {
   }
 
   onunload() {
-    abortSession();
-    // Remove the CodeMirror transaction handler, if it still exists.
-    if (this.cmExtensions.length > 0) {
-      this.cmExtensions.pop();
-      this.app.workspace.updateOptions();
+    if (this.scheduler !== undefined) {
+      this.scheduler.teardown();
+      abortSession();
     }
     log("Unloaded plugin");
   }

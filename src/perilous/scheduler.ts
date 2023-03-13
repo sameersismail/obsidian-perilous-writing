@@ -1,3 +1,5 @@
+type SchedulerState = "initialised" | "running" | "success" | "failure";
+
 export type SchedulerHooks = {
   /* The first entry point in to the application; a session has been requested. */
   onInitialisation: () => void;
@@ -25,6 +27,9 @@ export class Scheduler {
 
   // Event hooks
   hooks: SchedulerHooks;
+
+  // Scheduler state
+  schedulerState: SchedulerState = "initialised";
 
   // Internals
   elapsedTime: number = 0;
@@ -83,6 +88,7 @@ export class Scheduler {
         this.tickLength
       );
       this.startedScheduler = true;
+      this.schedulerState = "running";
       this.hooks.onStart(this.intervalId);
     } else {
       this.sinceLastEvent = 0;
@@ -91,6 +97,7 @@ export class Scheduler {
   }
 
   succeed() {
+    this.schedulerState = "success";
     this.hooks.onSuccess();
     this.teardown();
   }
@@ -105,6 +112,7 @@ export class Scheduler {
   }
 
   fail() {
+    this.schedulerState = "failure";
     this.hooks.onFailure();
     this.teardown();
   }
@@ -113,4 +121,16 @@ export class Scheduler {
     this.hooks.onTeardown();
     clearInterval(this.intervalId);
   }
+}
+
+/**
+ * A scheduler can be requested if (1) there is no current scheduler, or (2)
+ * the previous scheduler is not in progress.
+ */
+export function canStartScheduler(scheduler: Scheduler | undefined): boolean {
+  return (
+    scheduler === undefined ||
+    (scheduler.schedulerState !== "initialised" &&
+      scheduler.schedulerState !== "running")
+  );
 }
