@@ -1,7 +1,7 @@
 type SchedulerState = "initialised" | "running" | "success" | "failure";
 
 export type SchedulerHooks = {
-  /* The first entry point in to the application; a session has been requested. */
+  /* The first entry point into the application; a session has been requested. */
   onInitialisation: () => void;
   /* The first event has begun the session. */
   onStart: (intervalId: number) => void;

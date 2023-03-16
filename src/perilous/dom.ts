@@ -38,29 +38,30 @@ export function removeProgressBar() {
  * `0 <= percent <= 100`.
  */
 export function setProgressPercent(percent: number) {
-  const element = activeDocument.getElementById(
-    PROGRESS_BAR_WRAPPER_ID
-  ) as HTMLElement;
-  element.style.width = `${percent}%`;
+  const element = activeDocument.getElementById(PROGRESS_BAR_WRAPPER_ID);
+  if (element !== null) {
+    element.style.width = `${percent}%`;
+  }
 }
 
 /**
  * Halt the progress transition.
  */
 export function completeProgressBar() {
-  const element = activeDocument.getElementById(
-    PROGRESS_BAR_WRAPPER_ID
-  ) as HTMLElement;
-  element.style.transition = "none";
+  const element = activeDocument.getElementById(PROGRESS_BAR_WRAPPER_ID);
+  if (element !== null) {
+    element.style.transition = "none";
+  }
 }
 
 export function setProgressBarState(
   state: ProgressBarState,
   warningPercent: number = 0
 ): void {
-  const element = activeDocument.getElementById(
-    PROGRESS_BAR_BAR_ID
-  ) as HTMLElement;
+  const element = activeDocument.getElementById(PROGRESS_BAR_BAR_ID);
+  if (element === null) {
+    return;
+  }
   const color = {
     default: "purple",
     success: "green",

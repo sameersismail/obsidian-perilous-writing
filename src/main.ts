@@ -46,6 +46,7 @@ export default class PerilousWritingPlugin extends Plugin {
       editorCallback: (editor: Editor, view: MarkdownView) => {
         if (!canStartScheduler(this.scheduler)) {
           new Notice("A session is already in progress.");
+          return;
         }
 
         new CustomSessionModal(this.app, (sessionLength) => {
