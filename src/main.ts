@@ -6,7 +6,7 @@ import {
   PerilousWritingSettings,
   PerilousWritingSettingTab,
 } from "./settings";
-import { log } from "./utilities";
+import { CustomSessionModal, log, roundFloat } from "./utilities";
 
 export default class PerilousWritingPlugin extends Plugin {
   settings: PerilousWritingSettings;
@@ -37,6 +37,26 @@ export default class PerilousWritingPlugin extends Plugin {
         } else {
           new Notice("A session is already in progress.");
         }
+      },
+    });
+
+    this.addCommand({
+      id: "custom-session",
+      name: `Begin custom session`,
+      editorCallback: (editor: Editor, view: MarkdownView) => {
+        if (!canStartScheduler(this.scheduler)) {
+          new Notice("A session is already in progress.");
+        }
+
+        new CustomSessionModal(this.app, (sessionLength) => {
+          this.scheduler = startSession(
+            editor,
+            view,
+            this,
+            "custom",
+            roundFloat(sessionLength, 1)
+          );
+        }).open();
       },
     });
 

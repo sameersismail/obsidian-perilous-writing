@@ -11,19 +11,41 @@ import {
 } from "./dom";
 import { Scheduler, SchedulerHooks } from "./scheduler";
 
-type SessionType = "short" | "long";
+type SessionType = "short" | "long" | "custom";
 const MILLISECONDS_PER_MINUTE = 60_000;
 
 export function startSession(
   editor: Editor,
   view: MarkdownView,
   plugin: PerilousWritingPlugin,
-  sessionType: SessionType
-) {
-  const sessionLength =
-    (sessionType === "short"
-      ? plugin.settings.shortSessionLength
-      : plugin.settings.longSessionLength) * MILLISECONDS_PER_MINUTE;
+  sessionType: "short" | "long"
+): Scheduler;
+export function startSession(
+  editor: Editor,
+  view: MarkdownView,
+  plugin: PerilousWritingPlugin,
+  sessionType: "custom",
+  length: number
+): Scheduler;
+export function startSession(
+  editor: Editor,
+  view: MarkdownView,
+  plugin: PerilousWritingPlugin,
+  sessionType: SessionType,
+  length?: number
+): Scheduler {
+  let sessionLength = 0;
+  if (sessionType === "custom") {
+    // Safely cast `length` as the we've statically required that a
+    // custom session type must be accompanied by a length.
+    sessionLength = length as number;
+  } else if (sessionType === "short") {
+    sessionLength = plugin.settings.shortSessionLength;
+  } else {
+    sessionLength = plugin.settings.longSessionLength;
+  }
+  sessionLength *= MILLISECONDS_PER_MINUTE;
+
   log(`Session length: ${sessionLength / MILLISECONDS_PER_MINUTE}m`);
 
   const cmExtensions: Array<StateField<unknown>> = [];
