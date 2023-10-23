@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-perilous-writing",
-	"version": "1.1.1",
+	"version": "1.2.0",
 	"description": "Write continuously—or lose all progress.",
 	"main": "main.js",
 	"scripts": {
