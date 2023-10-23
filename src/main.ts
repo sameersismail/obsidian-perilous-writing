@@ -7,6 +7,7 @@ import {
   PerilousWritingSettingTab,
 } from "./settings";
 import { CustomSessionModal, log, roundFloat } from "./utilities";
+import { removeProgressBar } from "./perilous/dom";
 
 export default class PerilousWritingPlugin extends Plugin {
   settings: PerilousWritingSettings;
@@ -58,6 +59,28 @@ export default class PerilousWritingPlugin extends Plugin {
             roundFloat(sessionLength, 1)
           );
         }).open();
+      },
+    });
+
+    this.addCommand({
+      id: "clear-session",
+      name: "Clear session",
+      checkCallback: (checking: boolean) => {
+        if (checking) {
+          if (
+            this.scheduler &&
+            ["success", "failure", "initialised"].includes(
+              this.scheduler.schedulerState
+            )
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+        this.scheduler?.teardown();
+        this.scheduler = undefined;
+        removeProgressBar();
       },
     });
 
