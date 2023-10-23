@@ -29,6 +29,8 @@ An [Obsidian](https://obsidian.md) plugin which *demands* writing output, at the
 
     <img width="656" alt="image" src="https://user-images.githubusercontent.com/38896593/225519961-fc73c74b-23f3-4801-a4b8-a87092a18e34.png">
 
+6. Remove the progress bar with the “Clear session” command.
+
 # Installation
 ## Community Plugins
 
