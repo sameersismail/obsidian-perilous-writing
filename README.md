@@ -2,6 +2,9 @@
 
 An [Obsidian](https://obsidian.md) plugin which *demands* writing output, at the threat of bludgeoning your in-progress work. Emulates [Manu Ebert's](https://github.com/maebert) excellent [The Most Dangerous Writing App](https://github.com/maebert/themostdangerouswritingapp).
 
+[Try it out! ↗](https://perilous.sameerismail.org) <sup>☨</sup>
+
+<sub>[☨] (Experimental—bug reports welcome.)</sub>
 
 # Usage
 
