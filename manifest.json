@@ -1,7 +1,7 @@
 {
 	"id": "perilous-writing",
 	"name": "Perilous Writing",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"minAppVersion": "0.15.0",
 	"description": "Write continuously—or lose all progress.",
 	"author": "Sameer Ismail",
