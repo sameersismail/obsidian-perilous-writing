@@ -22,7 +22,7 @@ export class Scheduler {
   // Core parameters
   timeoutInterval: number = 5_000;
   warningInterval: number = 2_000;
-  tickLength: number = 200;
+  tickLength: number = 100;
   sessionLength: number;
 
   // Event hooks
