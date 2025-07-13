@@ -1,4 +1,8 @@
-import { StateField } from "@codemirror/state";
+import {
+  EditorState,
+  Extension,
+  StateField,
+} from "@codemirror/state";
 import { Editor, EditorPosition, MarkdownView } from "obsidian";
 import { log } from "src/utilities";
 import PerilousWritingPlugin from "../main";
@@ -48,7 +52,7 @@ export function startSession(
 
   log(`Session length: ${sessionLength / MILLISECONDS_PER_MINUTE}m`);
 
-  const cmExtensions: Array<StateField<unknown>> = [];
+  const cmExtensions: Array<StateField<unknown> | Extension> = [];
   const [initialContent, initialCursor] = getSnapshot(editor);
   removeProgressBar();
   addProgressBar(view, sessionLength);
@@ -94,6 +98,13 @@ export function startSession(
   const scheduler = new Scheduler(sessionLength, hooks);
 
   scheduler.initialise((eventCallback: () => void) => {
+    const preventDeletions = EditorState.transactionFilter.of((tr) => {
+      if (tr.isUserEvent("delete")) {
+        log("Prevented deletion.")
+        return [];
+      }
+      return tr;
+    });
     const onInputKeypress = StateField.define({
       create: () => null,
       update: (_, transaction) => {
@@ -106,7 +117,7 @@ export function startSession(
         return null;
       },
     });
-    cmExtensions.push(onInputKeypress);
+    cmExtensions.push([onInputKeypress, preventDeletions]);
     plugin.registerEditorExtension(cmExtensions);
     log("Registered CodeMirror hook");
   });
