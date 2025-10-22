@@ -57,7 +57,7 @@ Download the latest release, and copy the `main.js`, `styles.css`, and `manifest
 5. Copy the `main.js`, `styles.css`, and `manifest.json` files into that directory.
 
     ```sh
-    cp main.js styles.css manifest.json $VAULT_SOURCE/.obsidian/perilous-writing
+    cp main.js src/styles.css manifest.json $VAULT_SOURCE/.obsidian/plugins/perilous-writing
     ```
 6. Enable the plugin in Obsidian's settings tab.
 
