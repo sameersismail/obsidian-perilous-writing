@@ -95,7 +95,7 @@ export function startSession(
       log("Removed: CodeMirror hook; &c.");
     },
   };
-  const scheduler = new Scheduler(sessionLength, hooks);
+  const scheduler = new Scheduler(sessionLength, hooks, plugin.settings.timeoutInterval);
 
   scheduler.initialise((eventCallback: () => void) => {
     const preventDeletions = EditorState.transactionFilter.of((tr) => {

@@ -20,8 +20,8 @@ export type SchedulerHooks = {
 
 export class Scheduler {
   // Core parameters
-  timeoutInterval: number = 5_000;
-  warningInterval: number = 2_000;
+  timeoutInterval: number;
+  warningInterval: number;
   tickLength: number = 100;
   sessionLength: number;
 
@@ -38,9 +38,11 @@ export class Scheduler {
   intervalId: number | undefined = undefined;
   eventCallback: () => void;
 
-  constructor(sessionLength: number, hooks: SchedulerHooks) {
+  constructor(sessionLength: number, hooks: SchedulerHooks, timeoutInterval: number) {
     this.sessionLength = sessionLength;
     this.hooks = hooks;
+    this.timeoutInterval = timeoutInterval;
+    this.warningInterval = timeoutInterval - 3_000;
     this.eventCallback = this.onEvent.bind(this);
   }
 

@@ -5,11 +5,13 @@ import { parseInteger } from "./utilities";
 export interface PerilousWritingSettings {
   shortSessionLength: number; // minutes
   longSessionLength: number; // minutes
+  timeoutInterval: number; // milliseconds
 }
 
 export const DEFAULT_SETTINGS: PerilousWritingSettings = {
   shortSessionLength: 5,
   longSessionLength: 10,
+  timeoutInterval: 5_000,
 };
 
 export class PerilousWritingSettingTab extends PluginSettingTab {
@@ -69,6 +71,30 @@ export class PerilousWritingSettingTab extends PluginSettingTab {
             } else {
               new Notice(
                 `Error: value '${value}' is not a valid session length.`
+              );
+            }
+          })
+      );
+
+    new Setting(containerEl)
+      .setName("Deletion timeout (seconds)")
+      .setDesc("Time before work is deleted when you stop typing")
+      .addText((text) =>
+        text
+          .setPlaceholder("Enter timeout in seconds")
+          .setValue((this.plugin.settings.timeoutInterval / 1000).toString())
+          .onChange(async (value) => {
+            const timeoutSeconds = parseInteger(value);
+            if (timeoutSeconds !== undefined && timeoutSeconds >= 3) {
+              this.plugin.settings.timeoutInterval = timeoutSeconds * 1000;
+              await this.plugin.saveSettings();
+            } else if (value === "") {
+              this.plugin.settings.timeoutInterval =
+                DEFAULT_SETTINGS.timeoutInterval;
+              await this.plugin.saveSettings();
+            } else {
+              new Notice(
+                `Error: timeout must be at least 3 seconds.`
               );
             }
           })
